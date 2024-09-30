@@ -13,7 +13,8 @@ class ChatRequest(BaseModel):
     temperature: float = 0.7
 
 class ChatResponse(BaseModel):
-    generated_text: List[Dict[str, str]]
+    messages: List[Dict[str, str]]
+    
 
 def authenticate():
     load_dotenv()
@@ -28,13 +29,7 @@ def get_llama_model_pipeline():
     device = "cpu"
     if torch.cuda.is_available():
         device = "cuda"
-        print("Using GPU")
-    #if torch.cuda.is_available():
-    #    device = "cuda"
-    #    print("Using GPU")
-    #else:
-    #    device = "cpu"
-    #    print("Using CPU")
+    print("Using device:", device)
     pipe = pipeline(
         "text-generation",
         model=model_id,
@@ -48,11 +43,10 @@ app = FastAPI()
 
 @app.post("/chat/")
 async def chat(request: ChatRequest):
-    messages = request.messages
-    max_new_tokens = request.max_new_tokens
     response = llama_pipe(
-        messages, 
-        max_new_tokens=max_new_tokens,
-        temperature=request.temperature
+        text_inputs = request.messages, 
+        max_new_tokens = request.max_new_tokens,
+        temperature = request.temperature
         )
-    return ChatResponse(generated_text=response[0]['generated_text'])
+    
+    return ChatResponse(messages=response[0]['generated_text'])
