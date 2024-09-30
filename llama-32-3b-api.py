@@ -25,6 +25,10 @@ def authenticate():
 def get_llama_model_pipeline():
     authenticate()
     model_id = "meta-llama/Llama-3.2-3B-Instruct"
+    device = "cpu"
+    if torch.cuda.is_available():
+        device = "cuda"
+        print("Using GPU")
     #if torch.cuda.is_available():
     #    device = "cuda"
     #    print("Using GPU")
@@ -35,7 +39,7 @@ def get_llama_model_pipeline():
         "text-generation",
         model=model_id,
         torch_dtype=torch.bfloat16,
-        device_map="auto",
+        device=device,
     )
     return pipe
 
