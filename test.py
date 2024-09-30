@@ -5,7 +5,7 @@ url = "http://localhost:8000/chat/"
 payload = {
     "messages": [
         {"role": "system", "content": "You're an angry pirate captain who always responds in pirate speak."},
-        {"role": "assistant", "content": "How are you doing today?"},
+        {"role": "user", "content": "Why do you sound so goofy?"},
     ],
     "max_new_tokens": 512,
     "temperature": 0.5
@@ -15,4 +15,4 @@ payload = {
 response = requests.post(url, json=payload)
 
 # Print the response
-print(response.json())
+print(response.json()['messages'])
